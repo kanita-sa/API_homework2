@@ -1,0 +1,11 @@
+*.class
+
+*.jar
+*.war
+*.nar
+*.ear
+
+out
+target
+.idea
+*.inl

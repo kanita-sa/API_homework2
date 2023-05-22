@@ -1,0 +1,202 @@
+{
+	"id": "1140c6e4-ae44-435e-8598-d055a5bef7ad",
+	"name": "Api_SmokeTest",
+	"timestamp": "2023-05-21T22:32:18.286Z",
+	"collection_id": "27446481-61d0bd85-4df3-4a1e-be91-1d26d4e7ce1d",
+	"folder_id": 0,
+	"environment_id": "27446481-99070eb2-838c-482f-9c83-81675386cb66",
+	"totalPass": 15,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2023-05-21T22:32:14.914Z",
+	"totalFail": 6,
+	"results": [
+		{
+			"id": "1bd10ac9-a1a7-404f-91ed-e8f8f19ef437",
+			"name": "Obtaining authorization token",
+			"url": "https://demo.placelab.com/api/v2/sessions",
+			"time": 133,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Status code is 201": true,
+				"Response contains token": true
+			},
+			"testPassFailCounts": {
+				"Status code is 201": {
+					"pass": 3,
+					"fail": 0
+				},
+				"Response contains token": {
+					"pass": 3,
+					"fail": 0
+				}
+			},
+			"times": [
+				168,
+				133,
+				133
+			],
+			"allTests": [
+				{
+					"Status code is 201": true,
+					"Response contains token": true
+				},
+				{
+					"Status code is 201": true,
+					"Response contains token": true
+				},
+				{
+					"Status code is 201": true,
+					"Response contains token": true
+				}
+			]
+		},
+		{
+			"id": "11e8835f-bd32-4569-a7c1-58aaea3afea2",
+			"name": "Create Report",
+			"url": "https://demo.placelab.com/api/v2/reports/data_extraction?name=Report227&country_code=US",
+			"time": 275,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Status code is 201": true,
+				"When report ID is created": true
+			},
+			"testPassFailCounts": {
+				"Status code is 201": {
+					"pass": 3,
+					"fail": 0
+				},
+				"When report ID is created": {
+					"pass": 3,
+					"fail": 0
+				}
+			},
+			"times": [
+				264,
+				309,
+				275
+			],
+			"allTests": [
+				{
+					"Status code is 201": true,
+					"When report ID is created": true
+				},
+				{
+					"Status code is 201": true,
+					"When report ID is created": true
+				},
+				{
+					"Status code is 201": true,
+					"When report ID is created": true
+				}
+			]
+		},
+		{
+			"id": "8a00a6f4-3030-416b-8ec8-80b5115f418b",
+			"name": "Obtaining report status",
+			"url": "https://demo.placelab.com/api/v2/reports/181862/status",
+			"time": 142,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Then the output should transition from 'state: RUNNING' to 'state: CREATED' after 20 minutes": false
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 3,
+					"fail": 0
+				},
+				"Then the output should transition from 'state: RUNNING' to 'state: CREATED' after 20 minutes": {
+					"pass": 0,
+					"fail": 3
+				}
+			},
+			"times": [
+				140,
+				169,
+				142
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Then the output should transition from 'state: RUNNING' to 'state: CREATED' after 20 minutes": false
+				},
+				{
+					"Status code is 200": true,
+					"Then the output should transition from 'state: RUNNING' to 'state: CREATED' after 20 minutes": false
+				},
+				{
+					"Status code is 200": true,
+					"Then the output should transition from 'state: RUNNING' to 'state: CREATED' after 20 minutes": false
+				}
+			]
+		},
+		{
+			"id": "db52c944-c258-4a20-b683-474613117585",
+			"name": "Download Result File",
+			"url": "https://demo.placelab.com/api/v2/reports/181862/download",
+			"time": 135,
+			"responseCode": {
+				"code": 409,
+				"name": "Conflict"
+			},
+			"tests": {
+				"Status code is 200": false
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 0,
+					"fail": 3
+				}
+			},
+			"times": [
+				142,
+				320,
+				135
+			],
+			"allTests": [
+				{
+					"Status code is 200": false
+				},
+				{
+					"Status code is 200": false
+				},
+				{
+					"Status code is 200": false
+				}
+			]
+		}
+	],
+	"count": 3,
+	"totalTime": 2330,
+	"collection": {
+		"requests": [
+			{
+				"id": "1bd10ac9-a1a7-404f-91ed-e8f8f19ef437",
+				"method": "POST"
+			},
+			{
+				"id": "11e8835f-bd32-4569-a7c1-58aaea3afea2",
+				"method": "POST"
+			},
+			{
+				"id": "8a00a6f4-3030-416b-8ec8-80b5115f418b",
+				"method": "GET"
+			},
+			{
+				"id": "db52c944-c258-4a20-b683-474613117585",
+				"method": "GET"
+			}
+		]
+	}
+}

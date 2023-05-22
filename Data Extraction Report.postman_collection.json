@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "61d0bd85-4df3-4a1e-be91-1d26d4e7ce1d",
+		"name": "Data Extraction Report",
+		"description": "The Data Extraction report is enabling the user to extract data from websites they provide via text file. Firstly, the user needs to log in using their credidentials. When creating the Data Extraction Report, a name should be given to the report, as well as country code, together with a file.\n\nWhen the test is run, a certain amount of time is needed to proccess the data. When a report is generated, it gains a specific ID. A report status of the generated report can be obtained, and it is one of the following:\n\n- CREATED - Report was successfully created and is waiting for our services to add it to queue.\n- QUEUED - Report was successfully added to queue and is waiting for our workers to start processing the data.\n- RUNNING - Report is beeing processed by our workers.\n- FINISHED - Report has successfully finished processing and is in last phase of the flow.\n- ERROR - Report finished with error status. Reason can be seen on UI. This should almost never happen because all invalid data is beeing checked during report creation.\n- LIMIT EXCEEDED - Your account does not have sufficient PlaceLab Credits. You need to top up your account.\n- NO DATA - There is no data in input file. During report creation, we do check if file is empty, this status is regarding unhandled empty files.\n- INVALID FILE - File is invalid. Reason can be seen on UI.\n    \n\nWhen successfuly generating a report, the user can download result file.\n\n---\n\nUpon automatically runing the test for 3 iterations, a report of it was made. The duration was 3s372ms and average response time was 194 ms.  \n\\*However, it showed errors since the reports need about 20 minutes to generate, and to show status ''CREATED''",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27446481"
+	},
+	"item": [
+		{
+			"name": "Obtaining authorization token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function ( ) {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Given response contains token\", function () {\r",
+							"    pm.expect(pm.response.json()).to.have.property(\"api_token\").and.to.not.be.empty;\r",
+							"\r",
+							"    const token = pm.response.json().api_token;\r",
+							"    pm.collectionVariables.set(\"api_token\", token);\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "{{email}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BaseURL}}/api/v2/sessions",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"sessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Report",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseBodyJson = pm.response.json();\r",
+							"\r",
+							"const id = responseBodyJson.id;\r",
+							"\r",
+							"pm.collectionVariables.set(\"reportId\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function ( ) {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"When report ID is created\", function () {\r",
+							"        pm.expect(id).to.exist;\r",
+							"    });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Kanita/OneDrive/Desktop/sample_file.csv.txt"
+						},
+						{
+							"key": "delimiter",
+							"value": ",",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BaseURL}}/api/v2/reports/data_extraction?name=Report{{$randomInt}}&country_code=US",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"reports",
+						"data_extraction"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Report{{$randomInt}}"
+						},
+						{
+							"key": "country_code",
+							"value": "US"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtaining report status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function ( ) {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Then the output should transition from 'state: RUNNING' to 'state: CREATED' after 20 minutes\", function () {\r",
+							"    pm.expect(pm.response.json()).to.have.property(\"state\", \"RUNNING\");\r",
+							"\r",
+							"    setTimeout(function(){}, [1200000]);\r",
+							"    pm.sendRequest(function () {\r",
+							"        pm.expect(pm.response.json()).to.have.property(\"state\", \"CREATED\");\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "Authorization",
+							"value": "{{api_token}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BaseURL}}/api/v2/reports/{{reportId}}/status",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"reports",
+						"{{reportId}}",
+						"status"
+					],
+					"query": [
+						{
+							"key": "Authorization",
+							"value": "{{api_token}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download Result File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function ( ) {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{api_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BaseURL}}/api/v2/reports/{{reportId}}/download",
+					"host": [
+						"{{BaseURL}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"reports",
+						"{{reportId}}",
+						"download"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseURL",
+			"value": "https://demo.placelab.com/"
+		},
+		{
+			"key": "BaseURL",
+			"value": ""
+		},
+		{
+			"key": "api_token",
+			"value": ""
+		},
+		{
+			"key": "reportId",
+			"value": ""
+		}
+	]
+}
